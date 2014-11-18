@@ -1,11 +1,12 @@
 #include "Thread.h"
 #include "ThreadController.h"
 
-ThreadController::ThreadController(long _interval): Thread(){
+template <typename Arg>
+ThreadController<Arg>::ThreadController(long _interval): Thread<Arg>(){
 	cached_size = 0;
 
 	clear();
-	setInterval(_interval);
+	this->setInterval(_interval);
 
 	#ifdef USE_THREAD_NAMES
 		// Overrides name
@@ -17,10 +18,18 @@ ThreadController::ThreadController(long _interval): Thread(){
 /*
 	ThreadController run()
 */
-void ThreadController::run(){
-	// Run this thread before
-	if(_onRun != NULL)
-		_onRun();
+template <typename Arg>
+void ThreadController<Arg>::run(){
+
+	if(this->_callbackArgumentSet){
+		// Run this thread before
+		if(this->_onRunArg != NULL)
+			this->_onRunArg(this->_callbackArgument);
+	}else{
+		// Run this thread before
+		if(this->_onRun != NULL)
+			this->_onRun();
+	}
 
 	long time = millis();
 	int checks = 0;
@@ -34,15 +43,15 @@ void ThreadController::run(){
 		}
 	}
 
-	// ThreadController extends Thread, so we should flag as runned thread
-	runned();
+	// ThreadController extends Thread, so we should flag as hasRun thread
+	this->hasRun();
 }
-
 
 /*
 	List controller (boring part)
 */
-bool ThreadController::add(Thread* _thread){
+template <typename Arg>
+bool ThreadController<Arg>::add(Thread<Arg>* _thread){
 	// Check if the Thread already exists on the array
 	for(int i = 0; i < MAX_THREADS; i++){
 		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID)
@@ -63,7 +72,8 @@ bool ThreadController::add(Thread* _thread){
 	return false;
 }
 
-void ThreadController::remove(int id){
+template <typename Arg>
+void ThreadController<Arg>::remove(int id){
 	// Find Threads with the id, and removes
 	bool found = false;
 	for(int i = 0; i < MAX_THREADS; i++){
@@ -75,18 +85,21 @@ void ThreadController::remove(int id){
 	}
 }
 
-void ThreadController::remove(Thread* _thread){
+template <typename Arg>
+void ThreadController<Arg>::remove(Thread<Arg>* _thread){
 	remove(_thread->ThreadID);
 }
 
-void ThreadController::clear(){
+template <typename Arg>
+void ThreadController<Arg>::clear(){
 	for(int i = 0; i < MAX_THREADS; i++){
 		thread[i] = NULL;
 	}
 	cached_size = 0;
 }
 
-int ThreadController::size(bool cached){
+template <typename Arg>
+int ThreadController<Arg>::size(bool cached){
 	if(cached)
 		return cached_size;
 
@@ -100,7 +113,8 @@ int ThreadController::size(bool cached){
 	return cached_size;
 }
 
-Thread* ThreadController::get(int index){
+template <typename Arg>
+Thread<Arg>* ThreadController<Arg>::get(int index){
 	int pos = -1;
 	for(int i = 0; i < MAX_THREADS; i++){
 		if(thread[i] != NULL){
