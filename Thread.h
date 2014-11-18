@@ -1,7 +1,7 @@
 /*
- 	Thread.h - An runnable object
+ 	Thread.h - A runnable object
 
-	Thread is responsable for holding the "action" for something,
+	Thread is responsible for holding the "action" for something,
 	also, it responds if it "should" or "should not" run, based on
 	the current time;
 
@@ -20,7 +20,7 @@
 /*
 	Uncomment this line to enable ThreadName Strings.
 
-	It might be usefull if you are loging thread with Serial,
+	It might be useful if you are logging thread with Serial,
 	or displaying a list of threads...
 */
 // #define USE_THREAD_NAMES	1
@@ -30,7 +30,7 @@ protected:
 	// Desired interval between runs
 	long interval;
 
-	// Last runned time in Ms
+	// Last run time in Ms
 	long last_run;
 
 	// Scheduled run in Ms (MUST BE CACHED)	
