@@ -15,7 +15,7 @@ ThreadController::ThreadController(long _interval): Thread(){
 }
 
 /*
-	ThreadController run() (cool stuf)
+	ThreadController run()
 */
 void ThreadController::run(){
 	// Run this thread before
